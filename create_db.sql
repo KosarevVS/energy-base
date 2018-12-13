@@ -9,29 +9,29 @@ CREATE TABLE public.entity (
 
 CREATE TABLE public.power_plants (
 	id        serial      NOT NULL references public.entity(id),
-	plants    varchar(25) NOT NULL,
+	plants    varchar(50) NOT NULL,
 	PRIMARY KEY(plants)
 );
 
 CREATE TABLE public.defined_attributes (
-	key             varchar(25)   NOT NULL,
+	key             varchar(50)   NOT NULL,
 	description     varchar(100) NOT NULL,
 	PRIMARY KEY(key)
 );
 -- Таблица с текстовыми атрибутами
 CREATE TABLE public.attribute_str (
 	id      serial      NOT NULL references public.entity(id),
-	plants  varchar(25) NOT NULL references public.power_plants(plants),
-	key     varchar(25) NOT NULL references public.defined_attributes(key),
-	value   varchar(25) ,
+	plants  varchar(50) NOT NULL references public.power_plants(plants),
+	key     varchar(50) NOT NULL references public.defined_attributes(key),
+	value   varchar(100) ,
 	PRIMARY KEY (id, plants, key)
 );
 
 -- Таблица с численными атрибутами (мощность электрическая, тепловая, мощность генераторов, высота плотины)
 CREATE TABLE public.attribute_num (
 	id      serial      NOT NULL references public.entity(id),
-	plants  varchar(25) NOT NULL references public.power_plants(plants),
-	key     varchar(25) NOT NULL references public.defined_attributes(key),
+	plants  varchar(50) NOT NULL references public.power_plants(plants),
+	key     varchar(50) NOT NULL references public.defined_attributes(key),
 	value_n numeric ,
 	PRIMARY KEY (id, plants, key)
 );
@@ -40,13 +40,13 @@ CREATE OR REPLACE FUNCTION public.hashpoint(point) RETURNS integer
    LANGUAGE sql IMMUTABLE
    AS 'SELECT hashfloat8($1[0]) # hashfloat8($1[1])';
 
-CREATE OPERATOR CLASS public.point_hash_ops DEFAULT FOR TYPE point USING hash AS
- OPERATOR 1 ~=(point,point),
- FUNCTION 1 public.hashpoint(point);
+--CREATE OPERATOR CLASS public.point_hash_ops DEFAULT FOR TYPE point USING hash AS
+--  OPERATOR 1 ~=(point,point),
+--  FUNCTION 1 public.hashpoint(point);
 
 CREATE TABLE public.location (
-    id  serial NOT NULL references public.entity(id),
-	plants   varchar(25) NOT NULL references public.power_plants(plants),
+  id  serial NOT NULL references public.entity(id),
+	plants   varchar(50) NOT NULL references public.power_plants(plants),
 	location point,
 	PRIMARY KEY (id, plants)
 );
